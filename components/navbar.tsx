@@ -2,11 +2,29 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Radio, Compass, Bell, User, Mic2, Sun, Moon } from "lucide-react";
+import {
+  Radio,
+  Compass,
+  Mic2,
+  Sun,
+  Moon,
+  ArrowRight,
+  ListMusic,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavSearch } from "./nav-search";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { Show, UserButton } from "@clerk/nextjs";
+// Import Shadcn Dropdown
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function Navbar() {
   const { theme, setTheme } = useTheme();
@@ -19,7 +37,6 @@ export function Navbar() {
     { href: "/channels", label: "Channels", icon: Radio },
   ];
 
-  // Prevent hydration mismatch by only rendering after mount
   useEffect(() => setMounted(true), []);
 
   return (
@@ -33,7 +50,6 @@ export function Navbar() {
               size={22}
               strokeWidth={2.5}
             />
-            {/* Subtle glow effect behind logo */}
             <div className="absolute inset-0 bg-primary/40 blur-xl rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <div className="hidden lg:block">
@@ -46,7 +62,7 @@ export function Navbar() {
           </div>
         </Link>
 
-        {/* 2. CENTER NAVIGATION - MODERN SEGMENTED CONTROL */}
+        {/* 2. CENTER NAVIGATION */}
         <div className="hidden md:flex items-center bg-primary/3 p-1.5 rounded-full border border-primary/5 backdrop-blur-md">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -54,18 +70,12 @@ export function Navbar() {
               <Link key={link.href} href={link.href}>
                 <div
                   className={`
-                  relative flex items-center gap-2.5 px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest transition-all duration-300
-                  ${
-                    isActive
-                      ? "bg-background text-primary shadow-[0_2px_10px_rgba(0,0,0,0.08)] scale-100"
-                      : "text-muted-foreground hover:text-primary hover:bg-primary/5 scale-95 hover:scale-100"
-                  }
-                `}
+          relative flex items-center gap-2.5 px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-widest transition-all duration-300
+          ${isActive ? "bg-background text-primary shadow-[0_2px_10px_rgba(0,0,0,0.08)]" : "text-muted-foreground hover:text-primary hover:bg-primary/5"}
+        `}
                 >
                   <link.icon size={15} strokeWidth={isActive ? 3 : 2} />
                   {link.label}
-
-                  {/* Creative "Live" Indicator for Broadcast */}
                   {link.isLive && (
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -76,15 +86,65 @@ export function Navbar() {
               </Link>
             );
           })}
+
+          {/* PRO "PLUS" DROPDOWN FOR MEMBERS */}
+          <Show when="signed-in">
+            <div className="flex items-center">
+              {/* Subtle Vertical Divider */}
+              <div className="h-4 w-px bg-primary/10 mx-2" />
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="group relative rounded-full px-5 h-9 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all active:scale-95"
+                  >
+                    Plus
+                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary rounded-full transition-all group-hover:w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  align="end"
+                  sideOffset={12}
+                  className="w-52 rounded-2xl border-primary/10 bg-background/95 backdrop-blur-xl p-2 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-primary/5 animate-in fade-in zoom-in-95 duration-200"
+                >
+                  <DropdownMenuLabel className="px-3 py-2 text-[9px] font-black uppercase tracking-[0.3em] text-primary/40 flex items-center gap-2">
+                    <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
+                    Member Access
+                  </DropdownMenuLabel>
+
+                  <DropdownMenuSeparator className="bg-primary/5 mx-2" />
+
+                  <Link href="/playlists">
+                    <DropdownMenuItem className="group flex items-center justify-between px-3 py-3 rounded-xl cursor-pointer hover:bg-primary/5 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-primary/5 group-hover:bg-primary group-hover:text-white transition-colors">
+                          <ListMusic size={16} />
+                        </div>
+                        <span className="text-[11px] font-bold uppercase tracking-wider">
+                          My Playlist
+                        </span>
+                      </div>
+                      <ArrowRight
+                        size={12}
+                        className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all"
+                      />
+                    </DropdownMenuItem>
+                  </Link>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </Show>
         </div>
 
         {/* 3. SEARCH & ACTIONS */}
         <div className="flex items-center gap-3 shrink-0">
           <NavSearch />
-
           <div className="h-8 w-px bg-primary/10 mx-1 hidden sm:block" />
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-3">
             <Button
               variant="ghost"
               size="icon"
@@ -95,33 +155,38 @@ export function Navbar() {
                 <div className="relative h-5 w-5 flex items-center justify-center">
                   <Sun
                     size={19}
-                    className={`absolute transition-all duration-500 transform ${
-                      theme === "dark"
-                        ? "rotate-90 scale-0 opacity-0"
-                        : "rotate-0 scale-100 opacity-100"
-                    }`}
+                    className={`absolute transition-all duration-500 transform ${theme === "dark" ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"}`}
                   />
                   <Moon
                     size={19}
-                    className={`absolute transition-all duration-500 transform ${
-                      theme === "dark"
-                        ? "rotate-0 scale-100 opacity-100"
-                        : "-rotate-90 scale-0 opacity-0"
-                    } text-primary`}
+                    className={`absolute transition-all duration-500 transform ${theme === "dark" ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"} text-primary`}
                   />
                 </div>
               )}
-
-              {/* Subtle hover glow for the switch */}
-              <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity blur-md" />
             </Button>
 
-            <Button
-              size="icon"
-              className="rounded-full h-11 w-11 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all active:scale-90"
-            >
-              <User size={19} />
-            </Button>
+            <Show when="signed-out">
+              <Link href="/sign-in">
+                <Button className="rounded-full h-11 px-6 bg-primary text-primary-foreground font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95 flex gap-2 group">
+                  Join Terminal
+                  <ArrowRight
+                    size={14}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
+                </Button>
+              </Link>
+            </Show>
+
+            <Show when="signed-in">
+              <UserButton
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "h-9 w-9",
+                    userButtonTrigger: "focus:shadow-none focus:ring-0",
+                  },
+                }}
+              />
+            </Show>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -83,17 +84,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${poppins.variable} font-sans antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={`${poppins.variable} font-sans antialiased`}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
