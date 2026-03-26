@@ -121,11 +121,11 @@ export function ExploreClient({
 
         <div
           ref={scrollContainerRef}
-          className="flex items-center gap-3 overflow-x-auto pb-4 no-scrollbar scroll-smooth"
+          className="flex items-center gap-2 md:gap-3 overflow-x-auto pb-4 no-scrollbar scroll-smooth"
         >
           <Button
             variant="default"
-            className="rounded-full px-8 h-11 font-bold tracking-tight shrink-0 border-primary/10 shadow-lg shadow-primary/20"
+            className="rounded-full px-6 h-9 md:px-8 md:h-11 font-bold tracking-tight shrink-0 border-primary/10 shadow-lg shadow-primary/20"
           >
             All
           </Button>
@@ -133,7 +133,7 @@ export function ExploreClient({
             <Link key={tab} href={`/search/${tab.toLocaleLowerCase()}`}>
               <Button
                 variant="outline"
-                className="rounded-full px-8 h-11 font-bold tracking-tight shrink-0 border-white/5 bg-zinc-900/40 hover:bg-primary/10 hover:border-primary/30 transition-all"
+                className="rounded-full px-6 h-9 md:px-8 md:h-11 font-bold tracking-tight shrink-0 border-white/5 bg-zinc-900/40 hover:bg-primary/10 hover:border-primary/30 transition-all"
               >
                 {tab}
               </Button>
@@ -144,65 +144,82 @@ export function ExploreClient({
 
       {/* --- CINEMATIC HERO --- */}
       {videos.length > 0 && (
-        <div className="flex flex-col lg:flex-row gap-12 mb-24">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 mb-16 lg:mb-24">
+          {/* MAIN FEATURED - Adjusted padding and text size for mobile */}
           <Link
             href={`/listening/${videos[0].id}`}
-            className="flex-1 group relative aspect-video overflow-hidden rounded-xl bg-secondary/20"
+            className="flex-1 group relative aspect-4/5 md:aspect-video overflow-hidden rounded-3xl bg-secondary/20 shadow-2xl shadow-primary/5"
           >
             <img
               src={videos[0].thumbnail}
               className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
               alt=""
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent" />
+            {/* Dynamic Gradient: Heavier on mobile to ensure text readability */}
+            <div className="absolute inset-0 bg-linear-to-t from-black via-black/40 to-transparent" />
 
-            <div className="absolute bottom-8 left-8 right-8 flex items-end justify-between">
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
+            <div className="absolute bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8 flex items-end justify-between gap-4">
+              <div className="space-y-2 md:space-y-3">
+                <div className="flex items-center gap-2 md:gap-3">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/60">
+                  <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-white/70">
                     Live Transmission
                   </span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-black text-white tracking-tighter uppercase leading-tight max-w-xl">
+                <h2 className="text-2xl md:text-4xl font-black text-white tracking-tighter uppercase leading-[1.1] max-w-xl line-clamp-4 md:line-clamp-3">
                   {videos[0].title}
                 </h2>
               </div>
-              <div className="h-14 w-14 rounded-full bg-white flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110">
-                <Play className="text-black fill-black ml-1" size={20} />
+
+              {/* Play Button: Scaled down for mobile */}
+              <div className="h-12 w-12 md:h-14 md:w-14 shrink-0 rounded-full bg-white flex items-center justify-center shadow-2xl transition-transform active:scale-90 md:group-hover:scale-110">
+                <Play className="text-black fill-black ml-1" />
               </div>
             </div>
           </Link>
 
-          <div className="w-full lg:w-95 flex flex-col">
-            <div className="flex items-center justify-between mb-8 border-b border-primary/10 pb-4">
+          {/* TRENDING SIGNALS - Horizontal on Mobile, Vertical on Desktop */}
+          <div className="w-full lg:w-96 flex flex-col">
+            <div className="flex items-center justify-between mb-6 lg:mb-8 border-b border-primary/10 pb-4">
               <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">
                 Trending Signals
               </h3>
+              {/* Hidden on desktop, visible on mobile to show more */}
+              <span className="lg:hidden text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
+                Swipe →
+              </span>
             </div>
 
-            <div className="flex flex-col divide-y divide-primary/5">
+            {/* MOBILE: Snap Scroll Container | DESKTOP: Standard Flex Column */}
+            <div className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-visible gap-4 lg:gap-0 lg:divide-y lg:divide-primary/5 no-scrollbar snap-x snap-mandatory">
               {videos.slice(1, 6).map((video, i) => (
                 <Link
                   key={video.id}
                   href={`/listening/${video.id}`}
-                  className="group/item flex items-center gap-4 py-4 first:pt-0 last:pb-0"
+                  className="group/item flex flex-col lg:flex-row items-start lg:items-center gap-4 py-4 lg:first:pt-0 lg:last:pb-0 min-w-50 lg:min-w-full snap-start"
                 >
-                  <span className="text-xs font-black text-muted-foreground/30 group-hover/item:text-primary transition-colors w-4">
+                  {/* Rank Number - Hidden on Mobile for clean grid */}
+                  <span className="hidden lg:block text-xs font-black text-muted-foreground/30 group-hover/item:text-primary transition-colors w-4">
                     {i + 1}
                   </span>
-                  <div className="relative h-12 w-12 shrink-0 rounded-md overflow-hidden bg-primary/5">
+
+                  <div className="relative h-28 lg:h-12 w-full lg:w-12 shrink-0 rounded-2xl lg:rounded-md overflow-hidden bg-primary/5">
                     <img
                       src={video.thumbnail}
-                      className="h-full w-full object-cover grayscale group-hover/item:grayscale-0 transition-all"
+                      className="h-full w-full object-cover grayscale lg:grayscale group-hover/item:grayscale-0 transition-all"
                       alt=""
                     />
+                    {/* Mobile Rank Badge */}
+                    <div className="lg:hidden absolute top-2 left-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg border border-white/10 text-[10px] font-black text-white">
+                      #{i + 1}
+                    </div>
                   </div>
+
                   <div className="flex-1 min-w-0">
-                    <h4 className="text-[13px] font-bold text-foreground/80 leading-snug line-clamp-1 group-hover/item:text-primary transition-colors">
+                    <h4 className="text-[13px] font-bold text-foreground/80 leading-snug line-clamp-2 lg:line-clamp-1 group-hover/item:text-primary transition-colors">
                       {video.title}
                     </h4>
-                    <p className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest mt-0.5">
+                    <p className="text-[9px] font-black text-muted-foreground/50 uppercase tracking-widest mt-1">
                       {video.channelTitle}
                     </p>
                   </div>

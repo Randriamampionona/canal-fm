@@ -4,8 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import { Search, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
-export function NavSearch() {
+interface NavSearchProps {
+  className?: string;
+  placeholder?: string;
+  onSearchComplete?: () => void;
+}
+
+export function NavSearch({
+  className,
+  placeholder,
+  onSearchComplete,
+}: NavSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [isPending, setIsPending] = useState(false);
@@ -27,10 +38,12 @@ export function NavSearch() {
     if (!query.trim()) return;
 
     setIsPending(true);
-    // Dynamic routing to the search page
+
+    // Trigger close immediately if provided (before navigation for better UX)
+    if (onSearchComplete) onSearchComplete();
+
     router.push(`/search/${encodeURIComponent(query.trim())}`);
 
-    // We reset pending after a delay so the spinner shows during the transition
     setTimeout(() => {
       setIsPending(false);
       setQuery("");
@@ -39,18 +52,18 @@ export function NavSearch() {
   };
 
   return (
-    <form onSubmit={handleSearch} className="relative group hidden xl:block">
+    <form onSubmit={handleSearch} className={cn("relative group", className)}>
       {isPending ? (
-        <Loader2 className="absolute left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-primary animate-spin" />
+        <Loader2 className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
       ) : (
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
       )}
       <Input
         ref={inputRef}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search Frequencies... (⌘K)"
-        className="w-48 pl-10 h-11 rounded-full bg-primary/5 border-none focus-visible:ring-2 focus-visible:ring-primary/10 text-xs font-medium transition-all duration-500 group-focus-within:w-64 group-focus-within:bg-primary/10 placeholder:font-normal"
+        placeholder={placeholder || "Search Frequencies... (⌘K)"}
+        className="w-full pl-11 h-12 md:h-11 rounded-full bg-primary/5 border-none focus-visible:ring-2 focus-visible:ring-primary/20 text-[11px] font-bold uppercase tracking-wider transition-all duration-500 placeholder:text-muted-foreground/50 placeholder:font-normal placeholder:lowercase"
       />
     </form>
   );

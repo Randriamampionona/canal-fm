@@ -10,7 +10,7 @@ export default async function Home() {
   return (
     <main className="relative min-h-screen bg-background transition-colors duration-500 overflow-hidden font-sans">
       {/* Absolute Dark Mode Toggle Positioning */}
-      <div className="absolute top-6 right-6 z-50">
+      <div className="fixed top-2 right-2 md:top-4 md:right-4 z-50">
         <ModeToggle />
       </div>
 
@@ -97,9 +97,9 @@ export default async function Home() {
           </div>
 
           <div className="text-left flex-1 space-y-3">
-            <div className="h-2.5 w-32 bg-primary/30 rounded-full animate-pulse" />
-            <div className="h-4 w-64 bg-muted rounded-full" />
-            <div className="h-3 w-40 bg-muted/50 rounded-full" />
+            <div className="h-2.5 w-24 md:w-32 bg-primary/30 rounded-full animate-pulse" />
+            <div className="h-4 md:w-64 bg-muted rounded-full" />
+            <div className="h-3 w-11 md:w-40 bg-muted/50 rounded-full" />
           </div>
 
           <div className="hidden md:flex items-end gap-1.5 h-16 px-4">
