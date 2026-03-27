@@ -77,7 +77,11 @@ export function Navbar() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      onClick={() => setOpenSheet(false)} // AUTO CLOSE
+                      onClick={() =>
+                        setTimeout(() => {
+                          setOpenSheet(false);
+                        }, 900)
+                      }
                     >
                       <div
                         className={`flex items-center gap-4 px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${pathname === link.href ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "hover:bg-primary/5 text-muted-foreground"}`}
@@ -93,7 +97,14 @@ export function Navbar() {
                     <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/40 mb-2 px-2">
                       Your Space
                     </p>
-                    <Link href="/playlists" onClick={() => setOpenSheet(false)}>
+                    <Link
+                      href="/playlists"
+                      onClick={() =>
+                        setTimeout(() => {
+                          setOpenSheet(false);
+                        }, 900)
+                      }
+                    >
                       <div
                         className={`flex items-center gap-4 px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${pathname === "/playlists" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "hover:bg-primary/5 text-muted-foreground"}`}
                       >
@@ -107,7 +118,10 @@ export function Navbar() {
             </Sheet>
           </div>
 
-          <Link href="/" className="flex items-center gap-3 group shrink-0">
+          <Link
+            href="/explore"
+            className="flex items-center gap-3 group shrink-0"
+          >
             <div className="relative w-11 h-11 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
               <Radio
                 className="text-primary-foreground"

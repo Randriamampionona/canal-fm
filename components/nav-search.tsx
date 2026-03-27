@@ -39,15 +39,14 @@ export function NavSearch({
 
     setIsPending(true);
 
-    // Trigger close immediately if provided (before navigation for better UX)
-    if (onSearchComplete) onSearchComplete();
-
     router.push(`/search/${encodeURIComponent(query.trim())}`);
 
     setTimeout(() => {
       setIsPending(false);
       setQuery("");
       inputRef.current?.blur();
+
+      if (onSearchComplete) onSearchComplete();
     }, 1000);
   };
 
